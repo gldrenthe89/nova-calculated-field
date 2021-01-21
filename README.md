@@ -10,8 +10,8 @@ In your composer add teh following:
 
 ```
 {
-"type": "git",
-"url": "https://bitbucket.org/invato/invato-branding-nova"
+"type": "vcs",
+"url": "https://github.com/gldrenthe89/nova-calculated-field"
 },
 ```
 
