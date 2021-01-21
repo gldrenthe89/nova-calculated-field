@@ -6,14 +6,6 @@ Install the package via composer:
 
 `composer require gldrenthe89/nove-calculated-field`
 
-In your composer add teh following:
-
-```
-{
-"type": "vcs",
-"url": "https://github.com/gldrenthe89/nova-calculated-field"
-},
-```
 
 ###The README gets an update in the future
 added features:
