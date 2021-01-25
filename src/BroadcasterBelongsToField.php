@@ -5,6 +5,7 @@ namespace Gldrenthe89\NovaCalculatedField;
 use Laravel\Nova\Element;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 
 class BroadcasterBelongsToField extends BelongsTo
 {
@@ -29,9 +30,9 @@ class BroadcasterBelongsToField extends BelongsTo
      * @param null $attribute
      * @param callable|null $resolveCallback
      */
-    public function __construct($name, $attribute = null, callable $resolveCallback = null)
+    public function __construct($name, $attribute = null, $resource = null)
     {
-        parent::__construct($name, $attribute, $resolveCallback);
+        parent::__construct($name, $attribute, $resource);
 
         $this->withMeta([
             'type' => 'number',
