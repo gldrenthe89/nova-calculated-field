@@ -1,13 +1,3 @@
-<!--<template>-->
-<!--    <span>{{ field.value }}</span>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--export default {-->
-<!--    props: ['resourceName', 'field'],-->
-<!--}-->
-<!--</script>-->
-
 <template>
     <div :class="`text-${field.textAlign}`">
     <span>

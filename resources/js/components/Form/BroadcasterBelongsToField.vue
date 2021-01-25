@@ -74,11 +74,12 @@
           </option>
         </select-control>
 
-        <create-relation-button
+        <create-relation-custom-button
             v-if="canShowNewRelationModal"
             @click="openRelationModal"
             class="ml-1"
             :dusk="`${field.attribute}-inline-create`"
+            :field="this.field"
         />
       </div>
 
@@ -391,6 +392,13 @@ export default {
       )
     },
 
+    // added
+    isReadonlyWithCreateRelationButton() {
+      return (
+          this.field.readonlyWithCreateRelationButton || _.get(this.field, 'extraAttributes.readonlyWithCreateRelationButton')
+      )
+    },
+
     shouldShowTrashed() {
       return (
           this.softDeletes &&
@@ -406,12 +414,13 @@ export default {
       }).authorizedToCreate
     },
 
+    // changed
     canShowNewRelationModal() {
       return (
           this.field.showCreateRelationButton &&
           !this.shownViaNewRelationModal &&
           !this.isLocked &&
-          !this.isReadonly &&
+          (!this.isReadonly || this.isReadonlyWithCreateRelationButton) &&
           this.authorizedToCreate
       )
     },

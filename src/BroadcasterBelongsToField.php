@@ -4,8 +4,6 @@ namespace Gldrenthe89\NovaCalculatedField;
 
 use Laravel\Nova\Element;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 
 class BroadcasterBelongsToField extends BelongsTo
 {
@@ -59,10 +57,39 @@ class BroadcasterBelongsToField extends BelongsTo
      * @param string|array $broadcastChannel
      * @return Element
      */
-    public function broadcastTo($broadcastChannel) : Element
+    public function broadcastTo($broadcastChannel): Element
     {
         return $this->withMeta([
             'broadcastTo' => $broadcastChannel
+        ]);
+    }
+
+    /**
+     * Tells the client side component to show create relation button while field wil be readonly.
+     *
+     * @param  bool  $callback
+     * @return BroadcasterBelongsToField
+     */
+    public function readonlyWithCreateRelationButton($callback = true): Element
+    {
+        $this->readonlyCallback = $callback;
+        $this->showCreateRelationButtonCallback = $callback;
+
+        return $this->withMeta([
+            'readonlyWithCreateRelationButton' => $callback
+        ]);
+    }
+
+    /**
+     * Tells the client side component which label to use for the create relation button.
+     *
+     * @param $label
+     * @return BroadcasterBelongsToField
+     */
+    public function labelForCreateRelationButton($label): Element
+    {
+        return $this->withMeta([
+            'createRelationButtonLabel' => $label
         ]);
     }
 }
