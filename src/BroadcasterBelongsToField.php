@@ -55,7 +55,8 @@ class BroadcasterBelongsToField extends BelongsTo
 
     /**
      * Tells the client side component which channel to broadcast on
-     * @param string $broadcastChannel
+     *
+     * @param string|array $broadcastChannel
      * @return Element
      */
     public function broadcastTo($broadcastChannel) : Element
