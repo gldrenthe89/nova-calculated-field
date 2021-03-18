@@ -16,17 +16,11 @@ class BroadcasterBelongsToField extends BelongsTo
     public $component = 'broadcaster-belongsto-field';
 
     /**
-     * The type of the field to show on the form
-     * @var string
-     */
-    public $type = 'number';
-
-    /**
      * BroadcasterField constructor.
      *
      * @param $name
      * @param null $attribute
-     * @param callable|null $resolveCallback
+     * @param null $resource
      */
     public function __construct($name, $attribute = null, $resource = null)
     {
@@ -35,19 +29,6 @@ class BroadcasterBelongsToField extends BelongsTo
         $this->withMeta([
             'type' => 'number',
             'broadcastTo' => 'broadcast-field-input'
-        ]);
-    }
-
-    /**
-     * Set the type of the field (string, number)
-     *
-     * @param $type
-     * @return Element
-     */
-    public function setType($type) : Element
-    {
-        return $this->withMeta([
-            'type' => $type
         ]);
     }
 
