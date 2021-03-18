@@ -1,5 +1,14 @@
 This packages was originaly created by [codebykyle](https://github.com/codebykyle/calculated-field) But after an extensive refactor and updating a lot of VueJS code to latest Laravel Nova code i made this in to a new package.
 
+## New features
+-- BelongsTo Broadcaster field
+-- MorphTo Broadcaster field
+-- Currency Listener Field
+-- Hidden Listener Field
+-- Code has been completely updated to latest Nova (2021-03-18)
+
+Below the old Documentation from [codebykyle](https://github.com/codebykyle)
+
 ## Installation
 
 Install the package via composer:
@@ -7,15 +16,9 @@ Install the package via composer:
 `composer require gldrenthe89/nove-calculated-field`
 
 
-###The README gets an update in the future
-added features:
--- select broadcaster field
--- belongsto broadcaster field
--- ability to broadcast to multiple channels
--- updated Vue components to reflect recent Nova added features
 
 
-# Original how-to from codebykyle
+# Original how-to from [codebykyle](https://github.com/codebykyle)
 
 ### Example
 For example:
