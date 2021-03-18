@@ -16,13 +16,13 @@ class ListenerCurrencyField extends Currency
 
     /**
      * The event this fields listens for
-     * @var string
+     * @var array|string
      */
     protected $listensTo;
 
     /**
      * The function to call when input is detected
-     * @var \Closure
+     * @var Closure
      */
     public $calculateFunction;
 
@@ -45,7 +45,7 @@ class ListenerCurrencyField extends Currency
 
     /**
      * The channel that the client side component listens to
-     * @param $channel
+     * @param array|string $channel
      * @return $this
      */
     public function listensTo($channel) {

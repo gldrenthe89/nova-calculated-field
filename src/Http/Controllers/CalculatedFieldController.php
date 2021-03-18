@@ -7,13 +7,23 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class CalculatedFieldController extends Controller
 {
-    public function calculate($resource, $field, NovaRequest $request)
+    public function calculate($resource, $fieldName, NovaRequest $request)
     {
         $field = $request->newResource()
             ->availableFields($request)
-            ->where('attribute', '=', $field)
+            ->whereNotNull('calculateFunction')
+            ->where('showOnCreation', '=', true)
+            ->where('attribute', '=', $fieldName)
             ->first();
 
+        if (empty($field)) {
+            $field = $request->newResource()
+                ->availableFields($request)
+                ->whereNotNull('calculateFunction')
+                ->where('showOnUpdate', '=', true)
+                ->where('attribute', '=', $fieldName)
+                ->first();
+        }
 
         if (empty($field)) {
             abort(404, "Unable to find the field required to calculate this value");

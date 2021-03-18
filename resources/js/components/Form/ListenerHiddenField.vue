@@ -1,5 +1,5 @@
 <template>
-  <input :id="field.name" type="hidden" v-model="value" />
+  <input :id="field.attribute" type="hidden" v-model="value" />
 </template>
 
 <script>
