@@ -19,6 +19,8 @@
             @input="handleChange"
             :value="value"
         />
+        <input type="button" class="btn btn-default btn-primary ml-3 cursor-pointer" value="Calculate" :id="field.attribute.concat('CalculateButton')" v-on:click="calculateValue(true);">
+
       </div>
     </template>
   </default-field>
@@ -62,14 +64,20 @@ export default {
       this.calculateValue()
     },
 
-    calculateValue: _.debounce(function () {
+    calculateValue: _.debounce(function (force = false) {
       this.calculating = true;
 
       Nova.request().post(
               `/gldrenthe89/nova-calculated-field/calculate/${this.resourceName}/${this.field.attribute}`,
               this.field_values
       ).then((response) => {
-        this.value = response.data.value;
+        if (
+            !(response.data.disabled && this.field.isUpdating)
+            ||
+            force
+        ) {
+          this.value = response.data.value
+        }
         this.calculating = false;
       }).catch(() => {
         this.calculating = false;
@@ -88,13 +96,6 @@ export default {
      */
     fill(formData) {
       formData.append(this.field.attribute, this.value || '')
-    },
-
-    /**
-     * Update the field's internal value.
-     */
-    handleChange(value) {
-      this.value = value
     },
   },
 

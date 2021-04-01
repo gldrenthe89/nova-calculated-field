@@ -4,10 +4,10 @@ namespace Gldrenthe89\NovaCalculatedField;
 
 use Gldrenthe89\NovaCalculatedField\Traits\CanDisableCalculationOnUpdateTrait;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Currency;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ListenerCurrencyField extends Currency
+class ListenerDateField extends Field
 {
     use CanDisableCalculationOnUpdateTrait;
 
@@ -16,16 +16,18 @@ class ListenerCurrencyField extends Currency
      *
      * @var string
      */
-    public $component = 'listener-currency-field';
+    public $component = 'listener-date-field';
 
     /**
      * The event this fields listens for
+     *
      * @var array|string
      */
     protected $listensTo;
 
     /**
      * The function to call when input is detected
+     *
      * @var Closure
      */
     public $calculateFunction;
@@ -39,6 +41,7 @@ class ListenerCurrencyField extends Currency
 
     /***
      * ListenerField constructor.
+     *
      * @param $name
      * @param null $attribute
      * @param callable|null $resolveCallback

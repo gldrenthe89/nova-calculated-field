@@ -1,110 +1,34 @@
-This packages was originaly created by [codebykyle](https://github.com/codebykyle/calculated-field) But after an extensive refactor and updating a lot of VueJS code to latest Laravel Nova code i made this in to a new package.
+This packages is created after the package from [codebykyle](https://github.com/codebykyle/calculated-field) But after an extensive refactor and updating a lot of VueJS code to the latest Laravel Nova code I made this in to a new package.
 
-## New features
--- BelongsTo Broadcaster field
--- MorphTo Broadcaster field
--- Currency Listener Field
--- Hidden Listener Field
--- Code has been completely updated to latest Nova (2021-03-18)
+# New features
 
-Below the old Documentation from [codebykyle](https://github.com/codebykyle)
+[Release V2.3]<br>
+-- Fixed issue where you can't edit a listener field <br>
+-- Added Date Broadcaster field <br>
+-- Added Date Listener field <br>
+-- Added 'calculate' buttons to all visible Listener Fields <br>
+-- Added ability to turn of calculation on update forms. <br>
 
-## Installation
+[changes up to V2.2]<br>
+-- BelongsTo Broadcaster field <br>
+-- MorphTo Broadcaster field <br>
+-- Currency Listener Field <br>
+-- Hidden Listener Field <br>
+-- Code has been completely updated to latest Nova (2021-03-18) <br>
+
+Below pieces of the old Documentation from [codebykyle](https://github.com/codebykyle)
+I'm not really good at writing documentation. So please feel free to creat a PR for it.
+
+# Installation
 
 Install the package via composer:
 
 `composer require gldrenthe89/nove-calculated-field`
 
 
+## Example
 
-
-# Original how-to from [codebykyle](https://github.com/codebykyle)
-
-### Example
-For example:
-#### As a number
 ![Calculated Number Field](https://cbk-website.s3.amazonaws.com/calculated-field/number_calc_field.gif "Calculated Number Field")
-
-#### As a string:
-![Calculated String Field](https://cbk-website.s3.amazonaws.com/calculated-field/string_calc_field.gif "Calculated String Field")
-
-##### Default
-The Listener field will by default sum all numbers passed to it
-
-### Usage
-```php
-<?php
-
-use Gldrenthe89\NovaCalculatedField\BroadcasterField;
-use Gldrenthe89\NovaCalculatedField\ListenerField;
-
-class MyResource extends Resource
-{
-    public function fields(Request $request) {
-        return [    
-            BroadcasterField::make('Sub Total', 'sub_total'),
-            BroadcasterField::make('Tax', 'tax'),
-            ListenerField::make('Total Field', 'total_field')
-        ];
-    }
-}
-```
-
-#### Overriding the Callback
-
-```php
-
-<?php
-use Gldrenthe89\NovaCalculatedField\BroadcasterField;
-use Gldrenthe89\NovaCalculatedField\ListenerField;
-
-class MyResource extends Resource
-{
-    public function fields(Request $request) {
-        return [    
-            BroadcasterField::make('Sub Total', 'sub_total'),
-            BroadcasterField::make('Tax', 'tax'),
-
-            ListenerField::make('Total Field', 'total_field')
-                ->calculateWith(function (Collection $values) {
-                    $subtotal = $values->get('sub_total');
-                    $tax = $values->get('tax');
-                    return $subtotal + $tax;
-                }),
-        ];
-    }
-}
-```
-
-
-#### String Fields
-```php
-
-<?php
-use Gldrenthe89\NovaCalculatedField\BroadcasterField;
-use Gldrenthe89\NovaCalculatedField\ListenerField;
-
-class MyResource extends Resource
-{
-    public function fields(Request $request) {
-        return [    
-            BroadcasterField::make('First Name', 'first_name')
-                ->setType('string'),
-
-            BroadcasterField::make('Last Name', 'last_name')
-                ->setType('string'),
-
-            ListenerField::make('Full Name', 'full_name')
-                ->calculateWith(function (Collection $values) {
-                    return $values->values()->join(' ');
-                }),
-        ];
-    }
-}
-```
-
-
-#### Multiple Calculated Fields
 
 ```php
 
@@ -117,13 +41,13 @@ class MyResource extends Resource
     public function fields(Request $request) {
         return [    
             BroadcasterField::make('Sub Total', 'sub_total')
-                ->broadcastTo('total'),
+                ->broadcastTo('total'), // can either be a String or an Array
 
             BroadcasterField::make('Tax', 'tax')
-                ->broadcastTo('total'),
+                ->broadcastTo('total'), // can either be a String or an Array
 
             ListenerField::make('Total Field', 'total_field')
-                ->listensTo('total')
+                ->listensTo('total') // can either be a String or an Array
                 ->calculateWith(function (Collection $values) {
                     $subtotal = $values->get('sub_total');
                     $tax = $values->get('tax');
@@ -132,13 +56,14 @@ class MyResource extends Resource
 
 
             BroadcasterField::make('Senior Discount', 'senior_discount')
-                ->broadcastTo('discount'),
+                ->broadcastTo('discount'), // can either be a String or an Array
     
             BroadcasterField::make('Coupon Discount', 'coupon_amount')
-                ->broadcastTo('discount'),
+                ->broadcastTo('discount'), // can either be a String or an Array
     
             ListenerField::make('Total Discount', 'total_discount')
-                ->listensTo('discount')
+                ->listensTo('discount') // can either be a String or an Array
+                ->disableCalculationOnUpdate() // Only when to disable on Update forms
                 ->calculateWith(function (Collection $values) {
                     $seniorDiscount = $values->get('senior_discount');
                     $couponAmount = $values->get('coupon_amount');

@@ -2,11 +2,15 @@
 
 namespace Gldrenthe89\NovaCalculatedField;
 
+use Gldrenthe89\NovaCalculatedField\Traits\CanDisableCalculationOnUpdateTrait;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ListenerHiddenField extends Field
 {
+    use CanDisableCalculationOnUpdateTrait;
+
     /**
      * The field's component.
      *
@@ -26,6 +30,13 @@ class ListenerHiddenField extends Field
      */
     public $calculateFunction;
 
+    /**
+     * If request is an update of update attached request
+     *
+     * @var Closure
+     */
+    public $isUpdating;
+
     /***
      * ListenerField constructor.
      * @param $name
@@ -38,7 +49,9 @@ class ListenerHiddenField extends Field
 
         $this->listensTo = 'broadcast-field-input';
 
-        $this->calculateFunction = function ($values, Request $request) {
+        $this->isUpdating = app(NovaRequest::class)->isUpdateOrUpdateAttachedRequest();
+
+        $this->calculateFunction = static function ($values, Request $request) {
             return collect($values)->values()->sum();
         };
     }
@@ -71,6 +84,7 @@ class ListenerHiddenField extends Field
     public function jsonSerialize()
     {
         return array_merge([
+            'isUpdating' => $this->isUpdating,
             'listensTo' => $this->listensTo
         ], parent::jsonSerialize());
     }

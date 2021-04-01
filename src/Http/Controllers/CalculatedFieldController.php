@@ -36,6 +36,7 @@ class CalculatedFieldController extends Controller
         );
 
         return response()->json([
+            'disabled' => $field->disableOnUpdate,
             'value' => $calculatedValue
         ]);
     }

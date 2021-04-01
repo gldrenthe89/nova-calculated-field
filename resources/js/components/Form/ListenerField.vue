@@ -1,27 +1,30 @@
 <template>
   <default-field :field="field" :errors="errors" :show-help-text="showHelpText">
     <template slot="field">
-      <input
-          class="w-full form-control form-input form-input-bordered"
-          @input="handleChange"
-          :value="value"
-          :id="field.attribute"
-          :dusk="field.attribute"
-          v-bind="extraAttributes"
-          :disabled="isReadonly"
-          :list="`${field.attribute}-list`"
-      />
-
-      <datalist
-          v-if="field.suggestions && field.suggestions.length > 0"
-          :id="`${field.attribute}-list`"
-      >
-        <option
-            :key="suggestion"
-            v-for="suggestion in field.suggestions"
-            :value="suggestion"
+      <div class="flex">
+        <input
+            class="w-full form-control form-input form-input-bordered"
+            @input="handleChange"
+            :value="value"
+            :id="field.attribute"
+            :dusk="field.attribute"
+            v-bind="extraAttributes"
+            :disabled="isReadonly"
+            :list="`${field.attribute}-list`"
         />
-      </datalist>
+
+        <datalist
+            v-if="field.suggestions && field.suggestions.length > 0"
+            :id="`${field.attribute}-list`"
+        >
+          <option
+              :key="suggestion"
+              v-for="suggestion in field.suggestions"
+              :value="suggestion"
+          />
+        </datalist>
+          <input type="button" class="btn btn-default btn-primary ml-3 cursor-pointer" value="Calculate" :id="field.attribute.concat('CalculateButton')" v-on:click="calculateValue(true);">
+      </div>
     </template>
   </default-field>
 </template>
@@ -47,19 +50,29 @@ export default {
       this.calculateValue()
     },
 
-    calculateValue: _.debounce(function () {
+    calculateValue: _.debounce(function (force = false) {
       this.calculating = true;
 
       Nova.request().post(
           `/gldrenthe89/nova-calculated-field/calculate/${this.resourceName}/${this.field.attribute}`,
           this.field_values
       ).then((response) => {
-        this.value = response.data.value;
+        if (
+            !(response.data.disabled && this.field.isUpdating)
+            ||
+            force
+        ) {
+          this.value = response.data.value
+        }
         this.calculating = false;
       }).catch(() => {
         this.calculating = false;
       });
     }, 500),
+
+    showButton() {
+      return false;
+    },
 
     /*
      * Set the initial, internal value for the field.
@@ -73,13 +86,6 @@ export default {
      */
     fill(formData) {
       formData.append(this.field.attribute, this.value || '')
-    },
-
-    /**
-     * Update the field's internal value.
-     */
-    handleChange(value) {
-      this.value = value
     },
 
     computed: {

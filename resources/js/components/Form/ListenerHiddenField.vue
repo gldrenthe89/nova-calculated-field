@@ -37,7 +37,11 @@ export default {
           `/gldrenthe89/nova-calculated-field/calculate/${this.resourceName}/${this.field.attribute}`,
           this.field_values
       ).then((response) => {
-        this.value = response.data.value;
+        if (
+            !(response.data.disabled && this.field.isUpdating)
+        ) {
+          this.value = response.data.value
+        }
         this.calculating = false;
       }).catch(() => {
         this.calculating = false;
