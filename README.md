@@ -23,7 +23,7 @@ I'm not really good at writing documentation. So please feel free to creat a PR 
 
 Install the package via composer:
 
-`composer require gldrenthe89/nove-calculated-field`
+`composer require gldrenthe89/nova-calculated-field`
 
 
 ## Example
