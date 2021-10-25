@@ -50,6 +50,16 @@ export default {
       this.calculateValue()
     },
 
+    broadCastAgain() {
+      console.log(this.field.broadcastTo);
+      if(this.field.broadcastTo == null) return;
+      let attribute = this.field.attribute
+      Nova.$emit(this.field.broadcastTo, {
+        'field_name': attribute,
+        'value': this.value
+      })
+    },
+
     calculateValue: _.debounce(function (force = false) {
       this.calculating = true;
 
@@ -62,8 +72,11 @@ export default {
             ||
             force
         ) {
+          console.log("inside if");
           this.value = response.data.value
+          this.broadCastAgain();
         }
+        console.log("outside if");
         this.calculating = false;
       }).catch(() => {
         this.calculating = false;
