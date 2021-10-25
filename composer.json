@@ -11,13 +11,13 @@
     "license": "MIT",
     "repositories":[
         {
-            "type": "composer",
-            "url": "https://nova.laravel.com"
+            "type": "path",
+            "url": "../nova/nova-3.29.0"
         }
     ],
     "require": {
         "php": ">=7.2.5",
-        "laravel/nova": "~3.0",
+        "laravel/nova": "*",
         "laravel/framework": "^7.0|^8.0"
     },
 

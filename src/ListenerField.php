@@ -26,6 +26,12 @@ class ListenerField extends Field
     protected $listensTo;
 
     /**
+     * @var boolean calculation button visible
+     * Default to true
+     */
+    protected $buttonVisible;
+
+    /**
      * The function to call when input is detected
      * @var Closure
      */
@@ -50,6 +56,8 @@ class ListenerField extends Field
 
         $this->listensTo = 'broadcast-field-input';
 
+        $this->buttonVisible = true;
+
         $this->isUpdating = app(NovaRequest::class)->isUpdateOrUpdateAttachedRequest();
 
         $this->calculateFunction = static function ($values, Request $request) {
@@ -64,6 +72,11 @@ class ListenerField extends Field
      */
     public function listensTo($channel) {
         $this->listensTo = $channel;
+        return $this;
+    }
+
+    public function showCalculationButton($state = true) {
+        $this->buttonVisible = $state;
         return $this;
     }
 
@@ -90,6 +103,18 @@ class ListenerField extends Field
         return $this;
     }
 
+    /**
+     * Allows us to set the step attribute on the input broadcaster field
+     * @param $broadcastChannel
+     * @return Element
+     */
+    public function setStep($value) : Element
+    {
+        return $this->withMeta([
+            'step' => $value
+        ]);
+    }
+
     /***
      * Serialize the field to JSON
      * @return array
@@ -98,7 +123,9 @@ class ListenerField extends Field
     {
         return array_merge([
             'isUpdating' => $this->isUpdating,
-            'listensTo' => $this->listensTo
+            'listensTo' => $this->listensTo,
+            'buttonVisible' => $this->buttonVisible ?? true,
+            'step'  => 'any'
         ], parent::jsonSerialize());
     }
 }

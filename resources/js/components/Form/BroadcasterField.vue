@@ -7,6 +7,9 @@
                 class="w-full form-control form-input form-input-bordered"
                 :class="errorClasses"
                 :placeholder="field.name"
+                :step="field.step"
+                :min="field.min"
+                :max="field.max"
                 :value="value"
                 @input="setFieldAndMessage"
             />
