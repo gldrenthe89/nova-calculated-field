@@ -33,7 +33,7 @@
               class="flex items-center"
           >
             <div v-if="option.avatar" class="mr-3">
-              <img :src="option.avatar" class="w-8 h-8 rounded-full block" />
+              <img :src="option.avatar" class="w-8 h-8 rounded-full block"/>
             </div>
 
             <div>
@@ -114,12 +114,7 @@
 <script>
 import _ from 'lodash'
 import storage from '../../storage/BelongsToFieldStorage'
-import {
-  FormField,
-  TogglesTrashed,
-  PerformsSearches,
-  HandlesValidationErrors,
-} from 'laravel-nova'
+import {FormField, HandlesValidationErrors, PerformsSearches, TogglesTrashed,} from 'laravel-nova'
 
 export default {
   mixins: [
@@ -152,7 +147,7 @@ export default {
   },
   // watch added
   watch: {
-    'selectedResource': function(val, oldVal){
+    'selectedResource': function (val, oldVal) {
       if (val != oldVal) {
         this.setFieldAndMessage()
       }
@@ -236,7 +231,7 @@ export default {
               this.field.attribute,
               this.queryParams
           )
-          .then(({ data: { resources, softDeletes, withTrashed } }) => {
+          .then(({data: {resources, softDeletes, withTrashed}}) => {
             if (this.initializingWithExistingResource || !this.isSearchable) {
               this.withTrashed = withTrashed
             }
@@ -296,32 +291,36 @@ export default {
       this.relationModalOpen = false
     },
 
-    handleSetResource({ id }) {
+    handleSetResource({id}) {
       this.closeRelationModal()
       this.selectedResourceId = id
       this.getAvailableResources().then(() => this.selectInitialResource())
     },
 
-    // added
-    setFieldAndMessage(el) {
-      // const rawValue = el.target.value;
-      const rawValue = this.selectedResource.value;
-      let parsedValue = rawValue;
+    emitValue(value) {
+      if (this.field.broadcastTo == null) return;
 
       let attribute = this.field.attribute
       if (Array.isArray(this.field.broadcastTo)) {
         this.field.broadcastTo.forEach(function (broadcastChannel) {
           Nova.$emit(broadcastChannel, {
             'field_name': attribute,
-            'value': parsedValue
+            'value': value
           })
         });
       } else {
         Nova.$emit(this.field.broadcastTo, {
           'field_name': attribute,
-          'value': parsedValue
+          'value': value
         })
       }
+    },
+
+    // added
+    setFieldAndMessage(el) {
+      let parsedValue = this.selectedResource.value;
+
+      this.emitValue(parsedValue);
 
       this.selectedResource.value = parsedValue;
     },

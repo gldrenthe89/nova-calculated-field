@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from 'laravel-nova'
+import {FormField, HandlesValidationErrors} from 'laravel-nova'
 
 export default {
   mixins: [HandlesValidationErrors, FormField],
@@ -55,14 +55,23 @@ export default {
       this.calculateValue()
     },
 
-    broadCastAgain() {
-      console.log(this.field.broadcastTo);
-      if(this.field.broadcastTo == null) return;
+    emitValue(value) {
+      if (this.field.broadcastTo == null) return;
+
       let attribute = this.field.attribute
-      Nova.$emit(this.field.broadcastTo, {
-        'field_name': attribute,
-        'value': this.value
-      })
+      if (Array.isArray(this.field.broadcastTo)) {
+        this.field.broadcastTo.forEach(function (broadcastChannel) {
+          Nova.$emit(broadcastChannel, {
+            'field_name': attribute,
+            'value': value
+          })
+        });
+      } else {
+        Nova.$emit(this.field.broadcastTo, {
+          'field_name': attribute,
+          'value': value
+        })
+      }
     },
 
     calculateValue: _.debounce(function (force = false) {
@@ -77,11 +86,9 @@ export default {
             ||
             force
         ) {
-          console.log("inside if");
           this.value = response.data.value
-          this.broadCastAgain();
+          this.emitValue(this.value);
         }
-        console.log("outside if");
         this.calculating = false;
       }).catch(() => {
         this.calculating = false;
@@ -97,6 +104,7 @@ export default {
      */
     setInitialValue() {
       this.value = this.field.value || ''
+      this.emitValue(this.value);
     },
 
     /**
