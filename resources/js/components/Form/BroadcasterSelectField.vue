@@ -114,29 +114,34 @@ export default {
         Nova.$emit(this.field.attribute + '-change', this.value)
       }
 
-      this.setMessage()
+      this.emitValue(this.value)
     },
 
+    /*
+     * Set the initial, internal value for the field.
+     */
+    setInitialValue() {
+      this.value = this.field.value || ''
+      this.emitValue(this.value);
+    },
 
-    setMessage() {
-      let parsedValue = this.value;
+    emitValue(value) {
+      if (this.field.broadcastTo == null) return;
 
       let attribute = this.field.attribute
       if (Array.isArray(this.field.broadcastTo)) {
         this.field.broadcastTo.forEach(function (broadcastChannel) {
           Nova.$emit(broadcastChannel, {
             'field_name': attribute,
-            'value': parsedValue
+            'value': value
           })
         });
       } else {
         Nova.$emit(this.field.broadcastTo, {
           'field_name': attribute,
-          'value': parsedValue
+          'value': value
         })
       }
-
-      // this.value = parsedValue;
     },
   },
 

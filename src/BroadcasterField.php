@@ -19,6 +19,7 @@ class BroadcasterField extends Field
      * @var string
      */
     public $type = 'number';
+    public $step = 'any';
 
     /**
      * BroadcasterField constructor.
@@ -33,8 +34,32 @@ class BroadcasterField extends Field
 
         $this->withMeta([
             'type' => 'number',
-            'broadcastTo' => 'broadcast-field-input'
+            'broadcastTo' => 'broadcast-field-input',
+            'step' => 'any'
         ]);
+    }
+
+
+    /**
+     * The minimum value that can be assigned to the field.
+     *
+     * @param  mixed  $min
+     * @return $this
+     */
+    public function min($min)
+    {
+        return $this->withMeta(['min' => $min]);
+    }
+
+    /**
+     * The maximum value that can be assigned to the field.
+     *
+     * @param  mixed  $max
+     * @return $this
+     */
+    public function max($max)
+    {
+        return $this->withMeta(['max' => $max]);
     }
 
     /**
@@ -43,11 +68,23 @@ class BroadcasterField extends Field
      * @param $type
      * @return Element
      */
-    public function setType($type) : Element
+    public function setType($type): Element
     {
-        return $this->withMeta([
-            'type' => $type
-        ]);
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Allows us to set the step attribute on the input broadcaster field
+     * @param $value
+     * @return Element
+     */
+    public function setStep($value): Element
+    {
+        $this->step = $value;
+
+        return $this;
     }
 
     /**
@@ -55,7 +92,7 @@ class BroadcasterField extends Field
      * @param array|string $broadcastChannel
      * @return Element
      */
-    public function broadcastTo($broadcastChannel) : Element
+    public function broadcastTo($broadcastChannel): Element
     {
         return $this->withMeta([
             'broadcastTo' => $broadcastChannel

@@ -4,6 +4,7 @@ namespace Gldrenthe89\NovaCalculatedField;
 
 use Gldrenthe89\NovaCalculatedField\Traits\CanDisableCalculationOnUpdateTrait;
 use Illuminate\Http\Request;
+use Laravel\Nova\Element;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -23,6 +24,12 @@ class ListenerField extends Field
      * @var array|string
      */
     protected $listensTo;
+
+    /**
+     * @var boolean calculation button visible
+     * Default to true
+     */
+    protected $buttonVisible;
 
     /**
      * The function to call when input is detected
@@ -49,6 +56,8 @@ class ListenerField extends Field
 
         $this->listensTo = 'broadcast-field-input';
 
+        $this->buttonVisible = true;
+
         $this->isUpdating = app(NovaRequest::class)->isUpdateOrUpdateAttachedRequest();
 
         $this->calculateFunction = static function ($values, Request $request) {
@@ -66,6 +75,23 @@ class ListenerField extends Field
         return $this;
     }
 
+    public function showCalculationButton($state = true) {
+        $this->buttonVisible = $state;
+        return $this;
+    }
+
+    /**
+     * Tells the client side component which channel to broadcast on
+     * @param array|string $broadcastChannel
+     * @return Element
+     */
+    public function broadcastTo($broadcastChannel) : Element
+    {
+        return $this->withMeta([
+            'broadcastTo' => $broadcastChannel
+        ]);
+    }
+
     /***
      * The callback we want to call when the field has some input
      *
@@ -77,6 +103,18 @@ class ListenerField extends Field
         return $this;
     }
 
+    /**
+     * Allows us to set the step attribute on the input broadcaster field
+     * @param $broadcastChannel
+     * @return Element
+     */
+    public function setStep($value) : Element
+    {
+        return $this->withMeta([
+            'step' => $value
+        ]);
+    }
+
     /***
      * Serialize the field to JSON
      * @return array
@@ -85,7 +123,9 @@ class ListenerField extends Field
     {
         return array_merge([
             'isUpdating' => $this->isUpdating,
-            'listensTo' => $this->listensTo
+            'listensTo' => $this->listensTo,
+            'buttonVisible' => $this->buttonVisible ?? true,
+            'step'  => 'any'
         ], parent::jsonSerialize());
     }
 }

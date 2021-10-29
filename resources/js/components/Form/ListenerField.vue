@@ -9,6 +9,7 @@
             :id="field.attribute"
             :dusk="field.attribute"
             v-bind="extraAttributes"
+            :step="field.step"
             :disabled="isReadonly"
             :list="`${field.attribute}-list`"
         />
@@ -23,14 +24,18 @@
               :value="suggestion"
           />
         </datalist>
-          <input type="button" class="btn btn-default btn-primary ml-3 cursor-pointer" value="Calculate" :id="field.attribute.concat('CalculateButton')" v-on:click="calculateValue(true);">
+          <input type="button"
+                 v-if="this.field.buttonVisible"
+                 class="btn btn-default btn-primary ml-3 cursor-pointer"
+                 value="Calculate" :id="field.attribute.concat('CalculateButton')"
+                 v-on:click="calculateValue(true);">
       </div>
     </template>
   </default-field>
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from 'laravel-nova'
+import {FormField, HandlesValidationErrors} from 'laravel-nova'
 
 export default {
   mixins: [HandlesValidationErrors, FormField],
@@ -50,6 +55,25 @@ export default {
       this.calculateValue()
     },
 
+    emitValue(value) {
+      if (this.field.broadcastTo == null) return;
+
+      let attribute = this.field.attribute
+      if (Array.isArray(this.field.broadcastTo)) {
+        this.field.broadcastTo.forEach(function (broadcastChannel) {
+          Nova.$emit(broadcastChannel, {
+            'field_name': attribute,
+            'value': value
+          })
+        });
+      } else {
+        Nova.$emit(this.field.broadcastTo, {
+          'field_name': attribute,
+          'value': value
+        })
+      }
+    },
+
     calculateValue: _.debounce(function (force = false) {
       this.calculating = true;
 
@@ -63,6 +87,7 @@ export default {
             force
         ) {
           this.value = response.data.value
+          this.emitValue(this.value);
         }
         this.calculating = false;
       }).catch(() => {
@@ -79,6 +104,7 @@ export default {
      */
     setInitialValue() {
       this.value = this.field.value || ''
+      this.emitValue(this.value);
     },
 
     /**
